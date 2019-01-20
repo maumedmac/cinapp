@@ -1,5 +1,24 @@
-//importando la libreria de diseño Material
+//importando la librerias
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'models/movieModel.dart';
+
+// constante con el link raiz de informacion
+const baseUrl="https://api.themoviedb.org/3/movie/";
+
+// constante con el link raiz de las imagenes
+const baseImagesUrl="https://image.tmdb.org/t/p/";
+
+// constante con la llave apikey para identificarnos con el API
+const apiKey="e5f70b25f779797e7d9106a4dcbaeb85";
+
+// constante de peliculas en proyeccion
+const nowPlayingUrl = "${baseUrl}now_playing?api_key=$apiKey";
+
+
+
+
 //Metodo principal
 void main()=> runApp(
   //Metodo material
@@ -23,8 +42,46 @@ class Cinapp extends StatefulWidget{
   _Cinapp createState() => new _Cinapp();
 
 }
+
+
 //Creamos un widget estado 
 class _Cinapp extends State<Cinapp>{
+  // Creamos un objeto Movie para guardar los resultados de la
+  // pagina moviedb
+  Movie nowPlayingMovies;
+  @override
+  // Llamamos al metodos initState para iniciar el procesp antes 
+  // que la aplicacio corra
+  void initState() {
+      // TODO: implement initState
+      
+      // llama a su clase padre
+      super.initState(); 
+      // llamamos los resultados del sitio web
+      _fetchNowPlayingMovies();
+    }
+    // creamos un metodo que llame los resultados del sitio web
+    // de forma asincrona para que no detenga el funcionamiento
+    // de la app y que se cargue en segundo plano
+    void _fetchNowPlayingMovies() async{
+      // solicitamos que guarde resultados en response y que a
+      // su vez tenga una espera por ellos 
+      var response = await http .get(nowPlayingUrl);
+      // decodificamos el JSON que nos devuelve el sitio
+      var decodeJson = jsonDecode(response.body);
+      // Guardamos el resultado en la variable nowPlayingMovies
+      // devolviendo una lista de objetos que son convertidos a 
+      // atributos de la case Result por medio de la clase Movie
+      setState(() {
+              nowPlayingMovies = Movie.fromJson(decodeJson); 
+              print(nowPlayingMovies);
+            });
+      
+       
+    }
+
+
+
   @override
     // Creamos nuestro widget contructor y le pasamos el contexto
     Widget build(BuildContext context) {
@@ -55,11 +112,35 @@ class _Cinapp extends State<Cinapp>{
         elevation: 0.0,
         // Este atributo incluye en tu widget otros widgets con estados
         leading: IconButton(
-          // Lr agreagamos un icono y por defecto tendra una accion
+          // Le agreagamos un icono y por defecto tendra una accion
+          // onpressed
           icon: Icon(Icons.menu), 
           onPressed: () {   
-          },
+          },     
         ),
+        // actions le agrega anuestro boton una coleccion de widgets
+        actions: <Widget>[
+          // El widget IconButton es un boton al que le asignamos un icono
+          // que necesita unaaccion onpressed
+          IconButton(icon: Icon(Icons.search),
+          onPressed: (){
+          },
+          )
+          /*,
+          IconButton(icon: Icon(Icons.photo),
+          onPressed: (){
+          },
+          ),
+          IconButton(icon: Icon(Icons.chat),
+          onPressed: (){
+          },
+          ),
+          IconButton(icon: Icon(Icons.gps_fixed),
+          onPressed: (){
+          },
+          )
+          */
+        ],
       ),
       );
     }
