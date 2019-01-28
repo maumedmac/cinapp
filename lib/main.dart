@@ -102,8 +102,8 @@ class _Cinapp extends State<Cinapp> {
         // por el metodo map recorrio por la varieble
         // movieItem y volvemos a retornar los objetos
         // como una lista con Arrow function
-        items: nowPlayingMovies.results
-            .map((movieItem) =>
+        items: nowPlayingMovies == null ? Center(child: CircularProgressIndicator(),) : 
+              nowPlayingMovies.results  .map((movieItem) =>
     
             // Image.networks al que le enviamos el link
             // con la dimension y la concatenacion del
